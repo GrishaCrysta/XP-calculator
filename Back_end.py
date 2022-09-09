@@ -21,16 +21,17 @@ class Round:
 
 
 class Game:
-    def __init__(self, firstr: Round, finalr: Round):
+    def __init__(self, firstr: Round, finalr: Round, difb: int = 1):
         self.firstR = firstr
         self.finalR = finalr
         self.currentRound = firstr
+        self.mapDifBonus = difb
         self.xpForGame = 0
         self.gotXP = 0
         for i in range(self.firstR.round, self.finalR.round + 1):
-            self.xpForGame += firstr.bonus
+            self.xpForGame += int(firstr.bonus * difb)
             firstr.roundup()
 
     def roundup(self):
-        self.gotXP += self.currentRound.bonus
+        self.gotXP += int(self.currentRound.bonus * self.mapDifBonus)
         self.currentRound.roundup()

@@ -1,28 +1,38 @@
 import Back_end as Calc
-from PyQt5 import QtWidgets, uic, QtGui
-import sys
+from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import Qt
-
-app = QtWidgets.QApplication([])
-win = uic.loadUi("gui.ui")
-win.XP.setFont(
-    QtGui.QFont('Times new roman', 24)
-)
-win.XP.setAlignment(Qt.AlignHCenter | Qt.AlignCenter)
-win.t1.setAlignment(Qt.AlignHCenter | Qt.AlignCenter)
-win.t2.setAlignment(Qt.AlignHCenter | Qt.AlignCenter)
-win.XP.setText("XP")
+from gui import Ui_MainWindow
+import sys
 
 
-def clicked():
-    try:
-        game = Calc.Game(Calc.Round(int(win.FirstR.text())), Calc.Round(int(win.FinalR.text())))
-        win.XP.setText(str(game.xpForGame) + " XP")
-    except TypeError:
-        win.XP.setText("ERROR")
+class MyWindow(QtWidgets.QDialog):
+
+    def __init__(self):
+        super(MyWindow, self).__init__()
+        self.ui = Ui_MainWindow()
+
+        self.ui.setupUi(self)
+
+        self.ui.XP.setFont(
+            QtGui.QFont('Times new roman', 24)
+        )
+        self.ui.XP.setAlignment(Qt.AlignHCenter | Qt.AlignCenter)
+        self.ui.t1.setAlignment(Qt.AlignHCenter | Qt.AlignCenter)
+        self.ui.t2.setAlignment(Qt.AlignHCenter | Qt.AlignCenter)
+        self.ui.XP.setText("XP")
+
+        def clicked():
+            try:
+                dif = 1 if self.ui.dif1.isChecked() else 1.1 if self.ui.dif2.isChecked() else 1.2 if self.ui.dif3.isChecked() else 1.3 if self.ui.dif4.isChecked() else 'err'
+                game = Calc.Game(Calc.Round(int(self.ui.FirstR.text())), Calc.Round(int(self.ui.FinalR.text())), dif)
+                self.ui.XP.setText(str(game.xpForGame) + " XP")
+            except TypeError:
+                self.ui.XP.setText("ERROR")
+
+        self.ui.calc.clicked.connect(clicked)
 
 
-win.Calc.clicked.connect(clicked)
-
-win.show()
+app = QtWidgets.QApplication(sys.argv)
+application = MyWindow()
+application.show()
 sys.exit(app.exec())
