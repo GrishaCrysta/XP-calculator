@@ -24,10 +24,10 @@ class Round:
 
 
 class Game:
-    def __init__(self, firstr: Round, finalr: Round, difb: int = 1):
-        self.firstR = firstr
-        self.finalR = finalr
-        self.currentRound = firstr
+    def __init__(self, firstr: Round, finalr: Round, difb: float = 1):
+        self.firstR = Round(firstr.round)
+        self.finalR = Round(finalr.round)
+        self.currentRound = Round(firstr.round)
         self.mapDifBonus = difb
         self.xpForGame = 0
         self.gotXP = 0
@@ -36,12 +36,28 @@ class Game:
             firstr.roundup()
 
     def roundup(self):
-        self.gotXP += int(self.currentRound.bonus * self.mapDifBonus) / 0.1 if self.currentRound > self.finalR else 1
+        self.gotXP += int(self.currentRound.bonus * self.mapDifBonus * (0.1 if self.currentRound > self.finalR else 1))
         self.currentRound.roundup()
 
-    def xptoround(self, r: int):
-        temp = self
+    def xptoandfromround(self, firstr: int, finalr: int):
+        temp = Game(self.firstR, self.finalR, self.mapDifBonus)
 
-        for i in range(0, r):
+        if temp.currentRound.round == firstr:
+            nothing = 0
+            """print("obj firstr = firstr par")"""
+        elif temp.currentRound.round > firstr:
+            assert "first round must be more"
+            """print("first round must be more")"""
+        else:
+            while temp.currentRound.round < firstr:
+                temp.roundup()
+                """print("round upped\n" + "current round: " + str(temp.currentRound.round) + "\nfirst round: " + str(firstr) + "\n\n")"""
+
+        temp.gotXP = 0
+
+        for i in range(firstr, finalr + 1):
             temp.roundup()
+            """
+            print("round upped\n" + "current round: " + str(temp.currentRound.round) + "\nfirst round: " + str(finalr) + "\n")
+            print("xp bonus: " + str(temp.currentRound.bonus) + "\ngotXP: " + str(temp.gotXP) + "\n\n")"""
         return temp.gotXP
