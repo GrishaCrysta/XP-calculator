@@ -17,7 +17,10 @@ class Round:
         self.bonus += 20 if self.round < 21 else 40 if self.round < 51 else 90
 
     def __eq__(self, other):
-        return self.round == other.r
+        return self.round == other.round
+
+    def __gt__(self, other):
+        return self.round > other.round
 
 
 class Game:
@@ -33,5 +36,12 @@ class Game:
             firstr.roundup()
 
     def roundup(self):
-        self.gotXP += int(self.currentRound.bonus * self.mapDifBonus)
+        self.gotXP += int(self.currentRound.bonus * self.mapDifBonus) / 0.1 if self.currentRound > self.finalR else 1
         self.currentRound.roundup()
+
+    def xptoround(self, r: int):
+        temp = self
+
+        for i in range(0, r):
+            temp.roundup()
+        return temp.gotXP
